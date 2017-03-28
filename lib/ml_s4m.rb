@@ -8,7 +8,6 @@ module MlS4m
     def initialize 
       @pn = nil
       @url_default = 'http://informatica.mercadolivre.com.br/PARTNUMBER_DisplayType_LF_OrderId_PRICE*DESC_ItemTypeID_N'
-      http://informatica.mercadolivre.com.br/me087_DisplayType_LF_OrderId_PRICE*DESC
       @offers = []
     end
 
