@@ -7,7 +7,7 @@ module MlS4m
   class MercadoLivre
     def initialize 
       @pn = nil
-      @url_default = 'http://informatica.mercadolivre.com.br/macbooks/PARTNUMBER_DisplayType_LF_OrderId_PRICE*DESC'
+      @url_default = 'http://informatica.mercadolivre.com.br/macbooks/PARTNUMBER_DisplayType_LF_OrderId_PRICE*DESC_ItemTypeID_N'
       @offers = []
     end
 
