@@ -7,13 +7,19 @@ module MlS4m
   class MercadoLivre
     def initialize 
       @pn = nil
-      @url_default = 'http://informatica.mercadolivre.com.br/PARTNUMBER_DisplayType_LF_OrderId_PRICE*DESC_ItemTypeID_N'
+      @url = {
+        :ML_INFO => 'http://informatica.mercadolivre.com.br/PARTNUMBER_DisplayType_LF_OrderId_PRICE*DESC_ItemTypeID_N',
+        :ML_CAMERA => 'http://cameras.mercadolivre.com.br/PARTNUMBER_DisplayType_LF_OrderId_PRICE*DESC_ItemTypeID_N',
+        :ML_PHONE => 'http://celulares.mercadolivre.com.br/PARTNUMBER_DisplayType_LF_OrderId_PRICE*DESC_ItemTypeID_N'
+      }
+      @url_default = nil
       @offers = []
     end
 
-    def setPNSearch(partNumber = nil)
+    def setPNSearch(partNumber = nil, category = nil)
       unless partNumber.nil?
         @pn = partNumber.downcase
+        @url_default = @url[category.to_sym] unless category.nil?
         url_page = @url_default.gsub('PARTNUMBER', @pn)
         begin
           page = Nokogiri::HTML(open(url_page))
