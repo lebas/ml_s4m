@@ -1,3 +1,3 @@
 module MlS4m
-  VERSION = "0.7"
+  VERSION = "0.7.4"
 end
