@@ -27,9 +27,9 @@ module MlS4m
             list = page.css('div').css('section').css('ol#searchResults').css('li')
             list_price = []
             list.each do |item|
-              if !item.children[6].nil? && !item.children[6].children[1].nil?
-                price = item.children[6].children[1].children[1] unless item.children[6].children[1].children[1].nil? 
-                list_price << "#{price.children[0]},#{price.children[1].text}"unless price.nil?
+              if !item.children[1].nil?
+                price = item.children[6].children[1].children[1] unless item.children[1].children[1].children[1].children[2].children[1].children[3].nil? 
+                list_price << price unless price.nil?
               end
             end
             @offers = list_price.map{ |x| current2int(x) }  
