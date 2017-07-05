@@ -24,7 +24,7 @@ module MlS4m
         begin
           page = Nokogiri::HTML(open(url_page))
           unless page.nil?
-            list = page.css('div.section').css('ol#searchResults').css('li')
+            list = page.css('div').css('section').css('ol#searchResults').css('li')
             list_price = []
             list.each do |item|
               if !item.children[6].nil? && !item.children[6].children[1].nil?
