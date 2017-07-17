@@ -24,10 +24,23 @@ module MlS4m
         begin
           page = Nokogiri::HTML(open(url_page))
           unless page.nil?
-            list = page.css('div').css('section').css('ol#searchResults').css('li')
+            list = page.css('ol#searchResults.list-view.srv').css('li')
             list_price = []
             list.each do |item|
-              unless item.children[1].nil? || item.children[1].children[1].children[1].children[2].children[1].nil? || item.children[1].children[1].children[1].children[2].children[1].children[3].nil? 
+              if item.children[6].nil? 
+                if !item.children[6].children[1].nil? && item.children[6].children[1].children[1].nil?
+                  price = item.children[6].children[1].children[1].text 
+                  price.gsub('R$ ','').gsub('.','') unless price.nil?
+                  list_price << price unless price.nil?
+                end
+              end
+            end
+            if list_price.empty? 
+              list = page.css('div').css('section').css('ol#searchResults').css('li')
+              list_price = []
+              list.each do |item|
+              if item.children[6].nil? 
+                item.children[1].children[1].children[1].children[2].children[1].nil? || item.children[1].children[1].children[1].children[2].children[1].children[3].nil? 
                 price = item.children[1].children[1].children[1].children[2].children[1].children[3].text
                 list_price << price unless price.nil?
               end
