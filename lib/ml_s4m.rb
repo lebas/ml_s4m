@@ -5,12 +5,12 @@ require 'pry'
 
 module MlS4m
   class MercadoLivre
-    def initialize 
-      @pn = nil
+    def initialize
       @url = {
-        :ML_INFO => 'http://informatica.mercadolivre.com.br/PARTNUMBER_DisplayType_LF_OrderId_PRICE*DESC_ItemTypeID_N',
-        :ML_CAMERA => 'http://cameras.mercadolivre.com.br/PARTNUMBER_DisplayType_LF_OrderId_PRICE*DESC_ItemTypeID_N',
-        :ML_PHONE => 'http://celulares.mercadolivre.com.br/PARTNUMBER_DisplayType_LF_OrderId_PRICE*DESC_ItemTypeID_N'
+        :ML_INFO => 'https://informatica.mercadolivre.com.br/PARTNUMBER_DisplayType_LF_ItemTypeID_N',
+        :ML_CAMERA => 'https://cameras.mercadolivre.com.br/PARTNUMBER_DisplayType_LF_ItemTypeID_N',
+        :ML_PHONE => 'https://celulares.mercadolivre.com.br/PARTNUMBER_DisplayType_LF_ItemTypeID_N',
+        :ML_DRONE => 'https://eletronicos.mercadolivre.com.br/drones-e-acessorios-drone/PARTNUMBER_DisplayType_LF_ItemTypeID_N'
       }
       @url_default = nil
       @offers = []
@@ -18,47 +18,51 @@ module MlS4m
 
     def setPNSearch(partNumber = nil, category = nil)
       unless partNumber.nil?
-        @pn = partNumber.downcase
+        @offers = []
+        ppn = partNumber.downcase
         @url_default = @url[category.to_sym] unless category.nil?
-        url_page = @url_default.gsub('PARTNUMBER', @pn)
-        begin
-          page = Nokogiri::HTML(open(url_page))
-          unless page.nil?
-            list = page.css('ol#searchResults.list-view.srv').css('li')
-            list_price = []
-            list.each do |item|
-              if item.children[6].nil? 
-                if !item.children[6].children[1].nil? && item.children[6].children[1].children[1].nil?
-                  price = item.children[6].children[1].children[1].text 
-                  price.gsub('R$ ','').gsub('.','') unless price.nil?
-                  list_price << price unless price.nil?
-                end
-              end
-            end
-            if list_price.empty? 
-              list = page.css('div').css('section').css('ol#searchResults').css('li')
-              list_price = []
-              list.each do |item|
-              if item.children[6].nil? 
-                item.children[1].children[1].children[1].children[2].children[1].nil? || item.children[1].children[1].children[1].children[2].children[1].children[3].nil? 
-                price = item.children[1].children[1].children[1].children[2].children[1].children[3].text
-                list_price << price unless price.nil?
-              end
-            end
-            @offers = list_price.map{ |x| current2int(x) }  
+        pn = ["#{ppn.gsub(' ','%20')}", "#{ppn.gsub(' ','%20')}ll", "#{ppn.gsub(' ','%20')}bz"]
+        pn.each do |pnumber|
+          url_page = @url_default.gsub('PARTNUMBER', pnumber.gsub(' ','%20'))
+          begin
+            page = Nokogiri::HTML(open(url_page))
+            @offers += crawler_list(page) unless page.nil?
+          rescue OpenURI::HTTPError
+            puts "[ERROR] - Nesta categoria não há anúncios que coincidam com a sua busca - #{pnumber}"
           end
-        rescue OpenURI::HTTPError
         end
-      end 
+        return @offers
+      end
     end
 
     def top5Offers
-       @offers[1..5] if @offers.count > 4 
+       @offers[1..5] if @offers.count > 4
     end
 
     private
       def current2int(money = nil)
         money.delete(" R$ ").gsub('.','').gsub(',','.').to_f if !money.nil? && money.class == String
+      end
+
+      def crawler_list(page = nil)
+        unless page.nil?
+          begin
+            list = page.css('div').css('section').css('ol#searchResults').css('li')
+            list_price = []
+            list.each do |item|
+              puts item
+              unless item.children[1].nil?
+                unless item.css('.price-fraction').nil?
+                  price = item.css('.price-fraction').text
+                  list_price << price unless price.nil?
+                end
+              end
+            end
+            return list_price.map{ |x| current2int(x) }
+          rescue StandardError  => e
+            puts "[ML] error 1 - crawler_list  #{e}"
+          end
+        end
       end
   end
 end
