@@ -1,15 +1,12 @@
 # MlS4m
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/ml_s4m`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'ml_s4m'
+gem 'ml_s4m', '0.9.5'
 ```
 
 And then execute:
@@ -22,7 +19,18 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+
+```ruby
+  ml = MlS4m::MercadoLivre.new
+  # list_search = ml.setPNSearch(PART_NUMBER, CATEGORY)
+  # CATEGIRY in ["ML_DRONE", "ML_INFO", "ML_CAMERA", "ML_PHONE")
+
+  # search in INFO
+  list_search = ml.setPNSearch("MPTU2", "ML_INFO")
+  # list = [1099.0, 1264.0, 1239.0, 744.0, 1110.0, 979.0, 935.0, 949.0, 1319.0, 930.0, 1460.0, 1171.0, 1109.0] prices in ML
+  top_50 = list_search.top5Offers() #top 50 first
+```
+
 
 ## Development
 

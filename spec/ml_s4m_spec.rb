@@ -10,23 +10,27 @@ describe MlS4m do
     list_search = ml.setPNSearch("MPTU2", "ML_INFO")
     expect(list_search).not_to eq([])
     expect(list_search.uniq).not_to eq([0.0])
+    expect(ml.top5Offers().count).to be <= 50
   end
 
   it "search in DRONE" do
     list_search = ml.setPNSearch("AIR", "ML_DRONE")
     expect(list_search).not_to eq([])
     expect(list_search.uniq).not_to eq([0.0])
+    expect(ml.top5Offers().count).to be <= 50
   end
 
   it "search in CAMERA" do
     list_search = ml.setPNSearch("HERO", "ML_CAMERA")
     expect(list_search).not_to eq([])
     expect(list_search.uniq).not_to eq([0.0])
+    expect(ml.top5Offers().count).to be <= 50
   end
 
   it "search in PHONE" do
     list_search = ml.setPNSearch("A1901", "ML_PHONE")
     expect(list_search).not_to eq([])
     expect(list_search.uniq).not_to eq([0.0])
+    expect(ml.top5Offers().count).to be <= 50
   end
 end
