@@ -50,10 +50,9 @@ module MlS4m
             list = page.css('div').css('section').css('ol#searchResults').css('li')
             list_price = []
             list.each do |item|
-              puts item
               unless item.children[1].nil?
                 unless item.css('.price-fraction').nil?
-                  price = item.css('.price-fraction').text
+                  price = item.css('.price__fraction').text
                   list_price << price unless price.nil?
                 end
               end
